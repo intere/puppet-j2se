@@ -18,9 +18,15 @@ class j2se {
             creates => "/tmp/jre-7u21-linux-i586.tar.gz";
 
            "apps_unpack_j2se" :
-              cwd => "/var",
+              cwd => "/opt",
               command => "/bin/tar -zxf /tmp/jre-7u21-linux-i586.tar.gz",
-              creates => "/var/jre1.7.0_21",
+              creates => "/opt/jre1.7.0_21",
               require => [ Exec["download"]  ];
+        }
+
+        file {  "/usr/bin/java" :
+          ensure => symlink,
+          target => "/opt/jre1.7.0_21/bin/java",
+          require => [ Exec["apps_unpack_j2se"] ];
         }
 }
