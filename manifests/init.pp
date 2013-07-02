@@ -30,3 +30,25 @@ class j2se {
           require => [ Exec["apps_unpack_j2se"] ];
         }
 }
+
+
+class j2se::jdk {
+        exec {
+          "download_jdk" :
+            cwd => "/tmp",
+            command => "/usr/bin/wget --no-check-certificate --no-cookies --header 'Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com' 'http://download.oracle.com/otn-pub/java/jdk/7u25-b15/jdk-7u25-linux-x64.tar.gz'", 
+            creates => "/tmp/jdk-7u25-linux-x64.tar.gz";
+
+           "apps_unpack_jdk" :
+              cwd => "/opt",
+              command => "/bin/tar -zxf /tmp/jdk-7u25-linux-x64.tar.gz",
+              creates => "/opt/jdk1.7.0_25",
+              require => [ Exec["download_jdk"]  ];
+        }
+
+        file {  "/usr/bin/java" :
+          ensure => symlink,
+          target => "/opt/jdk1.7.0_25/bin/java",
+          require => [ Exec["apps_unpack_jdk"] ];
+        }
+}
